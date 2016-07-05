@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+#
+# script to generat cscope files list
+# ======== 2015/05/21 ==========
+# support for multi repo
+#
+#
+#
+use strict;
+use warnings;
+use File::Spec;
+$| = 1;
+
+# user config
+#
+#my $command = 'find ';
+my $dest = 'cscope.files';
+my @postfix = ('.cpp', '.h', '.cc', '.c', '.m', '.mm', '.h', '.hxx', '.hpp', '.hh');
+my %global_config = (
+    '.' => [1 , 'src'],
+    '/usr/include' => [0 , '.'],
+);
+
+# ============
+
+@postfix = map { $_ = '*' . $_ } @postfix;
+
+foreach my $key (keys %global_config) {
+    my $command = 'find ';
+    my $repo = $key;
+    if (!File::Spec->file_name_is_absolute($repo)) {
+        $repo = File::Spec->rel2abs($repo);
+    }
+    my $able = shift(@{$global_config{$key}});
+
+    if (0 == $able) {
+        $command .= "$repo";
+        foreach  my $sub (@{$global_config{$key}}) {
+            $command .= qq{ -path };
+            $sub = File::Spec->catdir("$repo", "$sub");
+            $command .= qq{ "$sub" -prune -o };
+        }
+    } else {
+         foreach  my $sub (@{$global_config{$key}}) {
+             $sub = File::Spec->catdir("$key", "$sub");
+             $command .= qq{ $sub };
+         }
+    }
+    $command .= ' \(';
+    for (my $i = 0; $i < @postfix; $i++) {
+        $command .= qq{ -name "$postfix[$i]" };
+        $command .= qq{ -o } unless $i == @postfix -1;
+
+    }
+    $command .= ' \)';
+    $command .= ' -print';
+    $command .= " >> $dest";
+    print "$command\n";
+    qx /$command/;
+}
+
+1;

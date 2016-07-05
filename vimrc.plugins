@@ -1,0 +1,167 @@
+
+"source $VIMRUNTIME/ftplugin/man.vim
+" ---------------------------------------------------
+Plugin 'gmarik/Vundle.vim'
+
+" ---------------------------------------------------
+Plugin 'majutsushi/tagbar.git'
+
+nnoremap <unique> <silent> <F11> :TagbarToggle<CR>
+let g:tagbar_ctags_bin='/usr/bin/ctags'
+let g:tagbar_autofocus=1
+
+" ---------------------------------------------------
+" vim-color-solarized
+Plugin 'altercation/vim-colors-solarized'
+
+" molokai
+Plugin 'tomasr/molokai.git'
+
+
+" ---------------------------------------------------
+" nerdtree
+Plugin 'scrooloose/nerdtree'
+
+nmap <F10> :NERDTreeToggle<CR>
+let NERDTreeWinSize=32
+let NERDTreeWinPos="left"
+let NERDTreeShowHidden=1
+let NERDTreeMinimalUI=1
+let NERDTreeDirArrows=0
+let g:NERDTreeMapOpenSplit='s'
+let g:NERDTreeMapOpenVSplit='v'
+let NERDTreeAutoDeleteBuffer=1
+
+
+" ---------------------------------------------------
+" minibufexpl
+Plugin 'fholgado/minibufexpl.vim'
+
+nnoremap [b :MBEbp <CR>
+nnoremap ]b :MBEbn <CR>
+
+
+" ---------------------------------------------------
+" vim-signature
+Plugin 'kshenoy/vim-signature'
+
+let g:SignatureMap = {
+        \ 'Leader'             :  "m",
+        \ 'PlaceNextMark'      :  "m,",
+        \ 'ToggleMarkAtLine'   :  "m.",
+        \ 'PurgeMarksAtLine'   :  "m-",
+        \ 'DeleteMark'         :  "dm",
+        \ 'PurgeMarks'         :  "mda",
+        \ 'PurgeMarkers'       :  "m<BS>",
+        \ 'GotoNextLineAlpha'  :  "']",
+        \ 'GotoPrevLineAlpha'  :  "'[",
+        \ 'GotoNextSpotAlpha'  :  "`]",
+        \ 'GotoPrevSpotAlpha'  :  "`[",
+        \ 'GotoNextLineByPos'  :  "]'",
+        \ 'GotoPrevLineByPos'  :  "['",
+        \ 'GotoNextSpotByPos'  :  "mn",
+        \ 'GotoPrevSpotByPos'  :  "mp",
+        \ 'GotoNextMarker'     :  "[+",
+        \ 'GotoPrevMarker'     :  "[-",
+        \ 'GotoNextMarkerAny'  :  "]=",
+        \ 'GotoPrevMarkerAny'  :  "[=",
+        \ 'ListLocalMarks'     :  "ml",
+        \ 'ListLocalMarkers'   :  "m?"
+        \ }
+
+" ---------------------------------------------------
+" ctrlp: invoke by <ctrl-p>
+Plugin 'kien/ctrlp.vim'
+
+let g:ctrlp_working_path_mode = ''
+let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max=100'
+let g:ctrlp_max_files=0
+let g:ctrlp_follow_symlinks = 2
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
+
+" LargeFile
+" ---------------------------------------------------
+Plugin 'vim-scripts/LargeFile'
+
+let g:LargeFile= 5 " files >= 5MB will use LargeFile rules
+
+" ---------------------------------------------------
+Plugin 'vim-scripts/AutoComplPop.git'
+
+
+" ---------------------------------------------------
+Plugin 'Yggdroot/indentLine.git'
+
+
+" ---------------------------------------------------
+Plugin 'sjl/gundo.vim.git'
+
+nnoremap <F9> :GundoToggle<CR>
+
+" ---------------------------------------------------
+Plugin 'SirVer/ultisnips'
+
+Plugin 'honza/vim-snippets'
+
+let g:UltiSnipsExpandTrigger = '<tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
+let g:UltiSnipsEditSplit="vertical"
+
+" ---------------------------------------------------
+Plugin 'tpope/vim-fugitive.git'
+
+
+" ---------------------------------------------------
+Plugin 'bling/vim-airline.git'
+
+
+"" ---------------------------------------------------
+"Plugin 'Valloric/YouCompleteMe.git'
+"let g:ycm_confirm_extra_conf = 0
+"nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+"let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']
+
+
+" ---------------------------------------------------
+Plugin 'justincampbell/vim-eighties'
+
+let g:eighties_enabled = 1
+let g:eighties_minimum_width = 80
+let g:eighties_extra_width = 0 " Increase this if you want some extra room
+let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+let g:eighties_bufname_additional_patterns = ['NERD_tree']
+
+
+" ---------------------------------------------------
+Plugin 'aceofall/gtags.vim'
+
+set cscopetag
+set cscopeprg=gtags-cscope
+
+function! s:get_visual_selection()
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  let lines[0] = lines[0][col1 - 1:]
+  return join(lines, "\n")
+endfunction
+
+nnoremap <F2> :execute 'Gtags -d '.expand('<cword>')<CR>
+vnoremap <F2> <ESC>:execute 'Gtags -d ' . <SID>get_visual_selection()<CR>
+nnoremap <F3>  :execute 'Gtags -r '.expand('<cword>')<CR>
+nnoremap <F4>  :execute 'Gtags -g ' . expand('<cword>')<CR>
+nnoremap <F12> :execute '!gtags -v'<CR>
+
+" ---------------------------------------------------
+Plugin 'rking/ag.vim'
