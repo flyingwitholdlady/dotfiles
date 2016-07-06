@@ -1,0 +1,7 @@
+map <C-d> scrollPageDown
+map <C-u> scrollPageUp
+map F createActiveTabbedHint
+map a :tabnew baidu.com<CR>
+map c :tabnew google<CR>
+map L nextTab
+map H previousTab
