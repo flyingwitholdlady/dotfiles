@@ -23,17 +23,10 @@ syntax on " required
 
 " Default colorscheme setup
 
-if has('gui_running')
-    set background=dark
-else
-    set background=dark
-    set t_Co=256 " make sure our terminal use 256 color
-    let g:solarized_termcolors = 256
-    let g:rehash256 = 1
-endif
-"colorscheme solarized
-let g:molokai_original = 1
-colorscheme molokai
+set background=dark
+colorscheme solarized
+"let g:molokai_original = 1
+"colorscheme molokai
 highlight WhitespaceEOL ctermbg=red guibg=red
 match WhitespaceEOL /\s\+$/
 
@@ -96,14 +89,7 @@ set nojoinspaces
 set grepprg=lid\ -Rgrep\ -s
 set grepformat=%f:%l:%m
 set fileencodings=utf-8,GB18030,ucs-bom,default,latin1
-
-if has('clipboard')
-    if has('unnamedplus') " When possible use + register for copy-paste
-        set clipboard=unnamed,unnamedplus
-    else " On mac and Windows, use * register for copy-paste
-        set clipboard=unnamed
-    endif
-endif
+set clipboard=unnamed
 
 
 
