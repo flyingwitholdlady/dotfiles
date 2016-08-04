@@ -104,13 +104,12 @@ if has('autocmd')
                     \   exe "normal g`\"" |
                     \ endif
         au FileType text setlocal textwidth=78 " for all text files set 'textwidth' to 78 characters.
-        au FileType c,cpp,java,javascript set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://
         au FileType vim set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"
+        au FileType c,cpp,java,javascript set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://
     augroup END
 endif
 
 
-map Q gq
 " copy - paste
 noremap <Leader>p "+p
 vmap <C-c> "+y
@@ -123,11 +122,8 @@ noremap <C-j> <C-W>j
 noremap <C-k> <C-W>k
 noremap <C-l> <C-W>l
 
-nnoremap g^ gUiW
-nnoremap gv guiW
-
-vnoremap H ^
-vnoremap L g_
+noremap H ^
+noremap L g_
 
 noremap k gk
 noremap j gj
@@ -135,8 +131,7 @@ nnoremap [t gT
 nnoremap ]t gt
 nnoremap [c :cp <CR>
 nnoremap ]c :cn <CR>
-vnoremap < <gv
-vnoremap > >gv
+
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
@@ -146,6 +141,4 @@ inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap { {}<ESC>i
 inoremap < <><ESC>i
-
-
 

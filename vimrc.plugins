@@ -133,13 +133,13 @@ Plugin 'bling/vim-airline.git'
 
 
 " ---------------------------------------------------
-Plugin 'justincampbell/vim-eighties'
+"Plugin 'justincampbell/vim-eighties'
 
-let g:eighties_enabled = 1
-let g:eighties_minimum_width = 80
-let g:eighties_extra_width = 0 " Increase this if you want some extra room
-let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
-let g:eighties_bufname_additional_patterns = ['NERD_tree']
+"let g:eighties_enabled = 1
+"let g:eighties_minimum_width = 80
+"let g:eighties_extra_width = 0 " Increase this if you want some extra room
+"let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+"let g:eighties_bufname_additional_patterns = ['NERD_tree']
 
 
 " ---------------------------------------------------
@@ -165,3 +165,29 @@ nnoremap <F12> :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
 Plugin 'rking/ag.vim'
+Plugin 'vim-scripts/Mark--Karkat'
+Plugin 'terryma/vim-multiple-cursors'
+
+" ---------------------------------------------------
+Plugin 'MattesGroeger/vim-bookmarks.git'
+highlight BookmarkSign ctermbg=NONE ctermfg=160
+highlight BookmarkLine ctermbg=194 ctermfg=NONE
+let g:bookmark_sign = 'v'
+let g:bookmark_highlight_lines = 1
+nmap <Leader><Leader> <Plug>BookmarkToggle
+nmap ma <Plug>BookmarkShowAll
+nmap <F5> <Plug>BookmarkNext
+nmap <F6> <Plug>BookmarkPrev
+nmap mx <Plug>BookmarkClearAll
+
+
+" ---------------------------------------------------
+Plugin 'klen/python-mode.git'
+
+let g:pymode = 1
+let g:pymode_doc = 1
+let g:pymode_doc_bind = 'K'
+let g:pymode_run_bind = '<leader>r'
+let g:pymode_lint_on_write = 1
+let g:pymode_rope_goto_definition_bind = '<F3>'
+let g:pymode_rope_goto_definition_cmd = 'new'
