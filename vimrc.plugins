@@ -180,14 +180,20 @@ nmap <F5> <Plug>BookmarkNext
 nmap <F6> <Plug>BookmarkPrev
 nmap mx <Plug>BookmarkClearAll
 
+" ---------------------------------------------------
+Plugin 'davidhalter/jedi-vim.git'
+let g:jedi#popup_on_dot = 1
+let g:jedi#completions_command = '<C-Space>'
 
 " ---------------------------------------------------
 Plugin 'klen/python-mode.git'
 
 let g:pymode = 1
 let g:pymode_doc = 1
-let g:pymode_doc_bind = 'K'
 let g:pymode_run_bind = '<leader>r'
 let g:pymode_lint_on_write = 1
+let g:pymode_doc_bind = 'K'
 let g:pymode_rope_goto_definition_bind = '<F3>'
 let g:pymode_rope_goto_definition_cmd = 'new'
+
+
