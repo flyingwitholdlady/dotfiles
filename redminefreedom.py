@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-
 import requests
 from requests.auth import HTTPBasicAuth
 import os
@@ -11,7 +9,6 @@ import re
 import json
 import logging
 import argparse
-from bs4 import BeautifulSoup, NavigableString
 import time
 import datetime
 
@@ -26,7 +23,7 @@ def setup_logger():
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(filename)s - %(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
@@ -86,15 +83,6 @@ def request_page(session, url, payload = None, header = None, auth = None):
 #
 #
 
-def today(ftime = None):
-    now = datetime.datetime.now()
-    fnow = now.strftime('%Y-%m-%d')
-    if ftime is None:
-        return fnow
-    else:
-        delta =  datetime.datetime.strptime(ftime, '%Y-%m-%d') - datetime.datetime.strptime(fnow, '%Y-%m-%d')
-        return delta.days
-
 
 def get_operation_list(session):
     ## hack it to get users
@@ -131,25 +119,6 @@ def get_operation_list(session):
 
         #return user_ids, tracker_ids
 
-#def delay_test(session, token):
-#    issue_url = REDMINE_URL + '/issues/67464'
-#    post_data =  {
-#        'authenticity_token': token,
-#        '_method': 'put',
-#        'utf8':'E2%9C%93',
-#        'commit':'%cc%e1%bd%bb',
-#        'issue[due_date]':'2016-08-20',
-#        'issue[notes]':'delay',
-#    }
-#    r = session.post(issue_url, headers=header, data=post_data)
-#    if r.status_code != requests.codes.ok:
-#        logging.error('POST:>>'+issue_url+'<< error:' + str(r.status_code))
-#        logging.error(r.raise_for_status())
-#        return None
-#    else:
-#        logging.info('user: '+ user + ' login success')
-#    return s, token[0]
-
 
 
 def get_issues(session, auth = None, filter_dict=None):
@@ -164,9 +133,8 @@ def get_issues(session, auth = None, filter_dict=None):
         json_addr += '&'
 
     json_addr = json_addr[:-1]
-    #json_addr='/issues.json?assigned_to_id=me&tracker_id=!5&status_id=8|31'
     r = request_page(session, REDMINE_URL + json_addr, header=header, auth=auth)
-    logging.info(REDMINE_URL + json_addr)
+    # logging.info(REDMINE_URL + json_addr)
     if r is None:
         sys.exit()
     return dict(json.loads(r.content))
@@ -178,32 +146,57 @@ def show_issues_state(issues = []):
         out=''
         if 'id' in issue.keys():
             out += str(issue['id']).center(7)
-            out += '||'
-        if 'project' in issue.keys():
-            out += issue['project']['name'].ljust(30)
-            out += '||'
+            out += '|'
+        #if 'project' in issue.keys():
+        #    out += issue['project']['name'].ljust(30)
+        #    out += '|'
         if 'tracker' in issue.keys():
             out += issue['tracker']['name'].center(10)
-            out += '||'
-        if issue['status']:
+            out += '|'
+        if 'status' in issue.keys():
             out += issue['status']['name'].center(20)
-            out += '||'
-        if issue['priority']:
-            out += issue['priority']['name'].center(10)
-            out += '||'
-        if issue['subject']:
-            out += issue['subject'].center(40)
-            out += '||'
-        if issue['start_date']:
-            out += issue['start_date']
-            out += '||'
+            out += '|'
+        #if 'priority' in issue.keys():
+        #    out += issue['priority']['name'].center(10)
+        #    out += '|'
+        #if 'subject' in issue.keys():
+        #    out += issue['subject'].center(40)
+        #    out += '|'
+        if 'start_date' in issue.keys():
+            out += issue['start_date'].center(20)
+            out += '|'
         if 'due_date' in issue.keys():
-            out += issue['due_date']
-            out += '||'
-        if issue['done_ratio']:
-            out += (str(issue['done_ratio']) + '%')
-            out += '||'
+            out += issue['due_date'].center(20)
+            out += '|'
+        else:
+            out += ''.center(20)
+            out += '|'
+        if 'done_ratio' in issue.keys():
+            out += (str(issue['done_ratio']) + '%').center(10)
+            out += '|'
         logging.info(out)
+
+
+def issue_delay(session, auth, id, date):
+    des_url = '{0}/issues/{1}.json'.format(REDMINE_URL, id)
+    payload = {'issue':{}}
+    payload['issue']['due_date'] = date
+    jsond = json.dumps(payload)
+    #logging.info(jsond)
+    #logging.info(des_url)
+    header = {
+        "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
+        "Content-Type": "application/json"
+    }
+    r = session.put(des_url, headers=header, data=jsond, auth=auth)
+    if r.status_code != requests.codes.ok:
+        logging.error('PUT:>>'+des_url+'<< error:{0}'.format(r.status_code))
+        logging.info(r.raise_for_status())
+        return None
+    else:
+        logging.info('{0} have delayed to {1}'.format(id, date))
+
+
 
 def main():
     setup_logger()
@@ -213,7 +206,7 @@ def main():
     parser.add_argument("-d", "--delay", help="Delay", required=False, default='auto')
     args = parser.parse_args()
     session , token = user_login(args.user, args.password)
-    auth = auth=HTTPBasicAuth(args.user, args.password)
+    auth = HTTPBasicAuth(args.user, args.password)
     issue_filter = {'assigned_to_id':['=','me'],
                 'status_id':['=', '31', '8', '23', '17','33'],
                 'tracker_id':['=!','5'],
@@ -228,8 +221,8 @@ def main():
 
     end_day = ''
     if args.delay == 'auto':
-        end_day = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         ## delay tomorrow
+        end_day = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
     else:
         try:
             time.strptime(str(args.delay), "%Y-%m-%d")
@@ -248,11 +241,13 @@ def main():
         if not issue.has_key('due_date'):
             logging.info('{0} have no end time, ignore'.format(issue['id']))
             continue
-        delta = today(issue['due_date'])
-        if delta <= 0:
-            ##TODO
+        logging.info(end_day)
+        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < datetime.datetime.strptime(end_day,'%Y-%m-%d').date()
             logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
-    #logging.info(issues)
+            issue_delay(session, auth, issue['id'], end_day)
+
+
+
 
 
     #hours = get_last_7_hours(session)
