@@ -215,24 +215,24 @@ def get_operation_list(session):
 
         #return user_ids, tracker_ids
 
-def delay_test(session, token):
-    issue_url = REDMINE_URL + '/issues/67464'
-    post_data =  {
-        'authenticity_token': token,
-        '_method': 'put',
-        'utf8':'E2%9C%93',
-        'commit':'%cc%e1%bd%bb',
-        'issue[due_date]':'2016-08-20',
-        'issue[notes]':'delay',
-    }
-    r = session.post(issue_url, headers=header, data=post_data)
-    if r.status_code != requests.codes.ok:
-        logging.error('POST:>>'+issue_url+'<< error:' + str(r.status_code))
-        logging.error(r.raise_for_status())
-        return None
-    else:
-        logging.info('user: '+ user + ' login success')
-    return s, token[0]
+#def delay_test(session, token):
+#    issue_url = REDMINE_URL + '/issues/67464'
+#    post_data =  {
+#        'authenticity_token': token,
+#        '_method': 'put',
+#        'utf8':'E2%9C%93',
+#        'commit':'%cc%e1%bd%bb',
+#        'issue[due_date]':'2016-08-20',
+#        'issue[notes]':'delay',
+#    }
+#    r = session.post(issue_url, headers=header, data=post_data)
+#    if r.status_code != requests.codes.ok:
+#        logging.error('POST:>>'+issue_url+'<< error:' + str(r.status_code))
+#        logging.error(r.raise_for_status())
+#        return None
+#    else:
+#        logging.info('user: '+ user + ' login success')
+#    return s, token[0]
 
 
 
@@ -244,21 +244,51 @@ def get_issues(session, auth = None, filter_dict=None):
         json_addr += key
         if filter_dict[key]:
             json_addr += str(filter_dict[key][0])
-            json_addr += ','.join(filter_dict[key][1:])
+            json_addr += '|'.join(filter_dict[key][1:])
         json_addr += '&'
 
     json_addr = json_addr[:-1]
     logging.info(json_addr)
+    #json_addr='/issues.json?assigned_to_id=me&tracker_id=!5&status_id=8|31'
     r = request_page(session, REDMINE_URL + json_addr, header=header, auth=auth)
+    #logging.info(r.content)
     if r is None:
         os.exit(0)
-
-    logging.info(r.content)
-
+    return dict(json.loads(r.content))
 
 
-def get_status_list(state):
-    pass
+
+def show_issues_state(issues = []):
+    for  issue in issues:
+        out=''
+        if issue['id']:
+            out += str(issue['id']).center(7)
+            out += '||'
+        if issue['project']:
+            out += issue['project']['name'].ljust(30)
+            out += '||'
+        if issue['tracker']:
+            out += issue['tracker']['name'].center(10)
+            out += '||'
+        if issue['status']:
+            out += issue['status']['name'].center(20)
+            out += '||'
+        if issue['priority']:
+            out += issue['priority']['name'].center(10)
+            out += '||'
+        if issue['subject']:
+            out += issue['subject'].center(40)
+            out += '||'
+        if issue['start_date']:
+            out += issue['start_date']
+            out += '||'
+        if 'due_date' in issue.keys():
+            out += issue['due_date']
+            out += '||'
+        if issue['done_ratio']:
+            out += (str(issue['done_ratio']) + '%')
+            out += '||'
+        logging.info(out)
 
 def main():
     setup_logger()
@@ -269,10 +299,16 @@ def main():
     session , token = user_login(args.user, args.password)
     auth = auth=HTTPBasicAuth(args.user, args.password)
     issue_filter = {'assigned_to_id':['=','me'],
-                'status_id':['=','8', '23', '17', '31', '33'],
-                'tracker_id':['!=','5'],
+                'status_id':['=', '31', '8', '23', '17','33'],
+                'tracker_id':['=!','5'],
                 }
-    get_issues(session, auth, issue_filter)
+    issues_dict = get_issues(session, auth, issue_filter)
+    issues=[]
+    if issues_dict.has_key('issues'):
+        issues = issues_dict['issues'];
+    show_issues_state(issues)
+        #issues = list(issues_dict['issues'])
+    #logging.info(issues)
     #users = get_operation_list(session)
     #delay_test(session, token)
 
