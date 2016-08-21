@@ -12,7 +12,7 @@ import argparse
 import time
 import datetime
 
-REDMINE_URL='http://redmine.china-liantong.com:8000'
+REDMINE_URL=''
 
 header = {
         "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
@@ -81,44 +81,6 @@ def request_page(session, url, payload = None, header = None, auth = None):
 #            result[key] = value
 #    return result;
 #
-#
-
-
-def get_operation_list(session):
-    ## hack it to get users
-    issue_page = REDMINE_URL + '/issues'
-    payload = { 'assigned_to_id': 'me', 'set_filter':1, 'priority':'desc,updated_on:desc'}
-    r = request_page(session, issue_page, payload)
-    if r == None:
-        sys.exit()
-    result = re.search('availableFilters = {.*?};', r.content)
-    if result == None:
-        logging.info('can\'t find availableFilters var')
-    else:
-        ## remove availableFilters and ';'
-        json_data = result.group(0)[len('availableFilters = '):-1]
-        dict_data = dict(json.loads(json_data))
-        #logging.info(dict_data)
-        logging.info(dict_data.keys())
-
-        user_ids = dict_data['assigned_to_id']['values']
-
-        tracker_ids = dict_data['tracker_id']['values']
-        logging.info(tracker_ids)
-
-        status_ids = dict_data['status_id']['values']
-        logging.info(status_ids)
-
-        priority_ids = dict_data['priority_id']['values']
-        logging.info(priority_ids )
-
-        #parent_issue_ids = dict_data['parent_issue_id']['values']
-        #logging.info(parent_issue_ids)
-        #tracker_ids = dict_data['fixed_version_id']['values']
-        #logging.info(user_ids)
-
-        #return user_ids, tracker_ids
-
 
 
 def get_issues(session, auth = None, filter_dict=None):
@@ -204,7 +166,12 @@ def main():
     parser.add_argument("-u", "--user", help="Username", required=True)
     parser.add_argument("-p", "--password", help="Password", required=True)
     parser.add_argument("-d", "--delay", help="Delay", required=False, default='auto')
+    parser.add_argument("-url", "--url", help="Url", required=True)
     args = parser.parse_args()
+
+    global REDMINE_URL
+    REDMINE_URL = args.url
+
     session , token = user_login(args.user, args.password)
     auth = HTTPBasicAuth(args.user, args.password)
     issue_filter = {'assigned_to_id':['=','me'],
@@ -219,19 +186,18 @@ def main():
         logging.info('can\'t get redmine issue!')
         sys.exit()
 
-    end_day = ''
+    end_date = datetime.date.today()
     if args.delay == 'auto':
         ## delay tomorrow
-        end_day = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        end_date = (datetime.date.today() + datetime.timedelta(days=1))
     else:
         try:
-            time.strptime(str(args.delay), "%Y-%m-%d")
-            end_day = args.delay
+            end_date = time.strptime(str(args.delay), "%Y-%m-%d")
         except:
             logging.error('{0} is not a valid date'.format(args.delay))
-            return sys.exit()
+            sys.exit()
 
-    logging.info('delay to {0}'.format(end_day))
+    logging.info('delay to {0}'.format(end_date.strptime("%Y-%m-%d")))
 
     show_issues_state(issues)
     for issue in issues:
@@ -241,14 +207,9 @@ def main():
         if not issue.has_key('due_date'):
             logging.info('{0} have no end time, ignore'.format(issue['id']))
             continue
-        logging.info(end_day)
-        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < datetime.datetime.strptime(end_day,'%Y-%m-%d').date()
+        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date
             logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
-            issue_delay(session, auth, issue['id'], end_day)
-
-
-
-
+            issue_delay(session, auth, issue['id'], end_date.strptime('%Y-%m-%d'))
 
     #hours = get_last_7_hours(session)
     #for key in hours:
@@ -260,19 +221,6 @@ def main():
     #        logging.error('work {0} hours in {1}, you have to send a email to your leader '.format(hour, key))
 
     #bugs = get_issues(session)
-
-    #for bug in bugs:
-    #    if bug.has_key('progress') and int(bug['progress']) == 100:
-    #        logging.info('{0}  progress is 100, ignore'.format(bug['bugid']))
-    #        continue
-    #    if not bug.has_key('end'):
-    #        logging.info('{0} have no end time, ignore'.format(bug['bugid']))
-    #        continue
-    #    delta = today(bug['end'])
-    #    if delta <= 0:
-    #        ##TODO
-    #        logging.info('bug {0} is end at {1}, we need to delay'.format(bug['bugid'], bug['end']))
-
 
 if __name__ == '__main__':
     main()
