@@ -182,7 +182,7 @@ def main():
             continue
         if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
             #logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
-            issue_delay(session, auth, issue['id'], end_date.strptime('%Y-%m-%d'))
+            issue_delay(session, auth, issue['id'], end_date.strftime('%Y-%m-%d'))
 
     #hours = get_last_7_hours(session)
     #for key in hours:
