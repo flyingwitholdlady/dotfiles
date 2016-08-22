@@ -59,6 +59,7 @@ def request_page(session, url, payload = None, header = None, auth = None):
     return r
 
 
+
 #def get_last_7_hours(session):
 #    result={}
 #    my_page = REDMINE_URL + '/my/page'
@@ -115,10 +116,19 @@ def show_issues_state(issues = []):
         logging.info('|'.join(value.values()))
 
 
+def get_my_time_spend(session, auth, date):
+    des_url = '{0}/time_entries.json'.format(REDMINE_URL)
+    payload = {
+        'user_id' : 'me',
+    }
+    r = request_page(session, des_url, auth = auth, payload = payload)
+    logging.info(r.content)
+
 def issue_delay(session, auth, id, date):
     des_url = '{0}/issues/{1}.json'.format(REDMINE_URL, id)
     payload = {'issue':{}}
     payload['issue']['due_date'] = date
+    payload['issue']['notes'] = 'delayed'
     jsond = json.dumps(payload)
     header = {
         "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
@@ -145,42 +155,43 @@ def main():
 
     session , token = user_login(args.user, args.password)
     auth = HTTPBasicAuth(args.user, args.password)
-    issue_filter = {'assigned_to_id':['=','me'],
-                'status_id':['=', '31', '8', '23', '17','33'],
-                'tracker_id':['=!','5'],
-                }
-    issues_dict = get_issues(session, auth, issue_filter)
-    issues=[]
-    if 'issues' in issues_dict.keys():
-        issues = issues_dict['issues'];
-    else:
-        logging.info('can\'t get redmine issue!')
-        sys.exit()
+    get_my_time_spend(session, auth, date='hello')
+    #issue_filter = {'assigned_to_id':['=','me'],
+    #            'status_id':['=', '31', '8', '23', '17','33'],
+    #            'tracker_id':['=!','5'],
+    #            }
+    #issues_dict = get_issues(session, auth, issue_filter)
+    #issues=[]
+    #if 'issues' in issues_dict.keys():
+    #    issues = issues_dict['issues'];
+    #else:
+    #    logging.info('can\'t get redmine issue!')
+    #    sys.exit()
 
-    end_date = datetime.date.today()
-    if args.delay == 'auto':
-        ## delay tomorrow
-        end_date = (datetime.date.today() + datetime.timedelta(days=1))
-    else:
-        try:
-            end_date = time.strptime(str(args.delay), "%Y-%m-%d")
-        except:
-            logging.error('{0} is not a valid date'.format(args.delay))
-            sys.exit()
+    #end_date = datetime.date.today()
+    #if args.delay == 'auto':
+    #    ## delay tomorrow
+    #    end_date = (datetime.date.today() + datetime.timedelta(days=1))
+    #else:
+    #    try:
+    #        end_date = time.strptime(str(args.delay), "%Y-%m-%d")
+    #    except:
+    #        logging.error('{0} is not a valid date'.format(args.delay))
+    #        sys.exit()
 
-    logging.info('delay to {0}'.format(end_date.strftime("%Y-%m-%d")))
+    #logging.info('delay to {0}'.format(end_date.strftime("%Y-%m-%d")))
 
-    show_issues_state(issues)
-    for issue in issues:
-        if issue.has_key('done_ratio') and int(issue['done_ratio']) == 100:
-            logging.info('{0}  progress is 100, ignore'.format(issue['id']))
-            continue
-        if not issue.has_key('due_date'):
-            logging.info('{0} have no end time, ignore'.format(issue['id']))
-            continue
-        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
-            #logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
-            issue_delay(session, auth, issue['id'], end_date.strftime('%Y-%m-%d'))
+    #show_issues_state(issues)
+    #for issue in issues:
+    #    if issue.has_key('done_ratio') and int(issue['done_ratio']) == 100:
+    #        logging.info('{0}  progress is 100, ignore'.format(issue['id']))
+    #        continue
+    #    if not issue.has_key('due_date'):
+    #        logging.info('{0} have no end time, ignore'.format(issue['id']))
+    #        continue
+    #    if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
+    #        #logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
+    #        issue_delay(session, auth, issue['id'], end_date.strftime('%Y-%m-%d'))
 
     #hours = get_last_7_hours(session)
     #for key in hours:
@@ -191,7 +202,6 @@ def main():
     #        ## TODO
     #        logging.error('work {0} hours in {1}, you have to send a email to your leader '.format(hour, key))
 
-    #bugs = get_issues(session)
 
 if __name__ == '__main__':
     main()
