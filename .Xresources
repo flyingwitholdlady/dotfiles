@@ -71,8 +71,8 @@ URxvt.saveLines:3000
 URxvt.borderLess:False
 
 ! keyboard-select
-URxvt.perl-lib: /home/lynnding/urxvt-perls
-URxvt.perl-ext-common: ...,keyboard-select
+URxvt.perl-lib: /home/lynnding/urxvt-perls/
+URxvt.perl-ext-common: keyboard-select,clipboard
 URxvt.keysym.M-s: perl:keyboard-select:activate
 URxvt.keysym.M-r: perl:keyboard-select:search
 Rxvt.clipboard.autocopy: true

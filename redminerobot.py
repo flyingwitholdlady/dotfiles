@@ -3,7 +3,6 @@
 
 import requests
 from requests.auth import HTTPBasicAuth
-import os
 import sys
 import re
 import json
@@ -11,6 +10,9 @@ import logging
 import argparse
 import time
 import datetime
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 REDMINE_URL=''
 
@@ -60,27 +62,6 @@ def request_page(session, url, payload = None, header = None, auth = None):
 
 
 
-#def get_last_7_hours(session):
-#    result={}
-#    my_page = REDMINE_URL + '/my/page'
-#    r = request_page(session, my_page)
-#    if r == None:
-#        logging.error('GET:>>'+ my_page +'<< error:' + str(r.status_code))
-#        return
-#    soup = BeautifulSoup(r.content, "html.parser")
-#    lists_days = soup.find_all('table','list time-entries')
-#    for child in lists_days[0].tbody.children:
-#        if child.name != None and child['class'][0].decode('utf-8') == 'odd':
-#            key = child.find_all('strong')[0].contents[0]
-#            ## for unicode today
-#            if key == u'今天':
-#                key = today()
-#            value = child.find_all('span', 'hours hours-int')[0].contents[0]
-#            result[key] = value
-#    return result;
-#
-
-
 def get_issues(session, auth = None, filter_dict=None):
     json_addr = '/issues.json'
     if filter_dict:
@@ -94,7 +75,6 @@ def get_issues(session, auth = None, filter_dict=None):
 
     json_addr = json_addr[:-1]
     r = request_page(session, REDMINE_URL + json_addr, auth=auth)
-    # logging.info(REDMINE_URL + json_addr)
     if r is None:
         sys.exit()
     return dict(json.loads(r.content))
@@ -116,13 +96,21 @@ def show_issues_state(issues = []):
         logging.info('|'.join(value.values()))
 
 
-def get_my_time_spend(session, auth, date):
+def get_time_spend_array(session, auth, date):
     des_url = '{0}/time_entries.json'.format(REDMINE_URL)
     payload = {
         'user_id' : 'me',
+        'spent_on' : date,
     }
     r = request_page(session, des_url, auth = auth, payload = payload)
-    logging.info(r.content)
+    time_entries = dict(json.loads(r.content))
+    if time_entries['total_count'] == 0:
+        return None
+    else:
+        # logging.info(time_entries['time_entries'])
+        return time_entries['time_entries']
+
+
 
 def issue_delay(session, auth, id, date):
     des_url = '{0}/issues/{1}.json'.format(REDMINE_URL, id)
@@ -155,52 +143,77 @@ def main():
 
     session , token = user_login(args.user, args.password)
     auth = HTTPBasicAuth(args.user, args.password)
-    get_my_time_spend(session, auth, date='hello')
-    #issue_filter = {'assigned_to_id':['=','me'],
-    #            'status_id':['=', '31', '8', '23', '17','33'],
-    #            'tracker_id':['=!','5'],
-    #            }
-    #issues_dict = get_issues(session, auth, issue_filter)
-    #issues=[]
-    #if 'issues' in issues_dict.keys():
-    #    issues = issues_dict['issues'];
-    #else:
-    #    logging.info('can\'t get redmine issue!')
-    #    sys.exit()
+    end_date = datetime.date.today()
+    if args.delay == 'auto':
+        ## delay tomorrow
+        end_date = (datetime.date.today() + datetime.timedelta(days=1))
+    else:
+        try:
+            end_date = time.strptime(str(args.delay), "%Y-%m-%d")
+        except:
+            logging.error('{0} is not a valid date'.format(args.delay))
+            sys.exit()
 
-    #end_date = datetime.date.today()
-    #if args.delay == 'auto':
-    #    ## delay tomorrow
-    #    end_date = (datetime.date.today() + datetime.timedelta(days=1))
-    #else:
-    #    try:
-    #        end_date = time.strptime(str(args.delay), "%Y-%m-%d")
-    #    except:
-    #        logging.error('{0} is not a valid date'.format(args.delay))
-    #        sys.exit()
+    logging.info('delay to {0}'.format(end_date.strftime("%Y-%m-%d")))
+    issue_filter = {'assigned_to_id':['=','me'],
+                'status_id':['=', '31', '8', '23', '17','33'],
+                'tracker_id':['=!','5'],
+                }
+    issues_dict = get_issues(session, auth, issue_filter)
+    issues=[]
+    if 'issues' in issues_dict.keys():
+        issues = issues_dict['issues'];
+    else:
+        logging.info('can\'t get redmine issue!')
+        sys.exit()
 
-    #logging.info('delay to {0}'.format(end_date.strftime("%Y-%m-%d")))
 
-    #show_issues_state(issues)
-    #for issue in issues:
-    #    if issue.has_key('done_ratio') and int(issue['done_ratio']) == 100:
-    #        logging.info('{0}  progress is 100, ignore'.format(issue['id']))
-    #        continue
-    #    if not issue.has_key('due_date'):
-    #        logging.info('{0} have no end time, ignore'.format(issue['id']))
-    #        continue
-    #    if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
-    #        #logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
-    #        issue_delay(session, auth, issue['id'], end_date.strftime('%Y-%m-%d'))
+    show_issues_state(issues)
+    for issue in issues:
+        if issue.has_key('done_ratio') and int(issue['done_ratio']) == 100:
+            logging.info('{0}  progress is 100, ignore'.format(issue['id']))
+            continue
+        if not issue.has_key('due_date'):
+            logging.info('{0} have no end time, ignore'.format(issue['id']))
+            continue
+        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
+            issue_delay(session, auth, issue['id'], end_date.strftime('%Y-%m-%d'))
 
-    #hours = get_last_7_hours(session)
-    #for key in hours:
-    #    hour = int(hours[key])
-    #    if  hour < 8:
-    #        logging.error('work {0} hours in {1} less than 8 hours'.format(hour, key))
-    #    elif hour > 14:
-    #        ## TODO
-    #        logging.error('work {0} hours in {1}, you have to send a email to your leader '.format(hour, key))
+    email_notify = 1
+    try:
+        mail_server = smtplib.SMTP('mail.xxxxx.com', 587)
+        # mail_server.set_debuglevel(1)
+        my_email_address = '{0}@xxxxx.com'.format(args.user)
+        mail_server.login(my_email_address, args.password)
+
+        msg = MIMEMultipart()
+        msg['From'] = my_email_address
+        msg['To'] = my_email_address
+        msg['Subject'] = 'Robot Redmine Message'
+
+    except smtplib.SMTPException, msg:
+        logging.error('login email error {0}'.format(msg))
+        email_notify = 0
+
+    spend_array = get_time_spend_array(session, auth, date=datetime.date.today().strftime('%Y-%m-%d'))
+    if spend_array == None:
+        logging.info('work 0 hours, rest?')
+    else:
+        hours = 0
+        email_content = ''
+        for spend in spend_array:
+            hours += spend['hours']
+        if hours < 8 or hours > 16:
+            if email_notify == 1:
+                email_content += 'work {0} hours in {1} \n'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d'))
+                msg.attach(MIMEText(email_content))
+                email_content += 'modify pls'
+                mail_server.sendmail(my_email_address, my_email_address, msg.as_string())
+            else:
+                logging.info('work {0} hours in {1}'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d')))
+        else:
+            logging.info('work {0} hours in {1}'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d')))
+
 
 
 if __name__ == '__main__':
