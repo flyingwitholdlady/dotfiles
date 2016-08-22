@@ -14,10 +14,6 @@ import datetime
 
 REDMINE_URL=''
 
-header = {
-        "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
-}
-
 def setup_logger():
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
@@ -44,7 +40,7 @@ def user_login(user, pwd):
         'password' : pwd,
         'username' : user,
     }
-    r = s.post(login_url, headers=header, data=post_data)
+    r = s.post(login_url, data=post_data)
     if r.status_code != requests.codes.ok:
         logging.error('POST:>>'+login_url+'<< error:' + str(r.status_code))
         return None, None
@@ -95,7 +91,7 @@ def get_issues(session, auth = None, filter_dict=None):
         json_addr += '&'
 
     json_addr = json_addr[:-1]
-    r = request_page(session, REDMINE_URL + json_addr, header=header, auth=auth)
+    r = request_page(session, REDMINE_URL + json_addr, auth=auth)
     # logging.info(REDMINE_URL + json_addr)
     if r is None:
         sys.exit()
@@ -105,38 +101,17 @@ def get_issues(session, auth = None, filter_dict=None):
 
 def show_issues_state(issues = []):
     for  issue in issues:
-        out=''
-        if 'id' in issue.keys():
-            out += str(issue['id']).center(7)
-            out += '|'
-        #if 'project' in issue.keys():
-        #    out += issue['project']['name'].ljust(30)
-        #    out += '|'
-        if 'tracker' in issue.keys():
-            out += issue['tracker']['name'].center(10)
-            out += '|'
-        if 'status' in issue.keys():
-            out += issue['status']['name'].center(20)
-            out += '|'
-        #if 'priority' in issue.keys():
-        #    out += issue['priority']['name'].center(10)
-        #    out += '|'
-        #if 'subject' in issue.keys():
-        #    out += issue['subject'].center(40)
-        #    out += '|'
-        if 'start_date' in issue.keys():
-            out += issue['start_date'].center(20)
-            out += '|'
-        if 'due_date' in issue.keys():
-            out += issue['due_date'].center(20)
-            out += '|'
-        else:
-            out += ''.center(20)
-            out += '|'
-        if 'done_ratio' in issue.keys():
-            out += (str(issue['done_ratio']) + '%').center(10)
-            out += '|'
-        logging.info(out)
+        value = {}
+        value['id'] = str(issue.get('id', '')).center(7)
+        value['tracker'] = issue.get('tracker', {}).get('name', '').center(10)
+        value['status'] = issue.get('status', {}).get('name', '').center(20)
+        value['start_date'] = issue.get('start_date', '').center(20)
+        value['due_date'] = issue.get('due_date', '').center(20)
+        value['done_ratio'] = (str(issue.get('done_ratio', '0')) + '%').center(20)
+        #'project' issue['project']['name']
+        #'priority' issue['priority']['name']
+        #'subject' issue['subject']
+        logging.info('|'.join(value.values()))
 
 
 def issue_delay(session, auth, id, date):
@@ -144,8 +119,6 @@ def issue_delay(session, auth, id, date):
     payload = {'issue':{}}
     payload['issue']['due_date'] = date
     jsond = json.dumps(payload)
-    #logging.info(jsond)
-    #logging.info(des_url)
     header = {
         "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
         "Content-Type": "application/json"
@@ -197,7 +170,7 @@ def main():
             logging.error('{0} is not a valid date'.format(args.delay))
             sys.exit()
 
-    logging.info('delay to {0}'.format(end_date.strptime("%Y-%m-%d")))
+    logging.info('delay to {0}'.format(end_date.strftime("%Y-%m-%d")))
 
     show_issues_state(issues)
     for issue in issues:
@@ -207,8 +180,8 @@ def main():
         if not issue.has_key('due_date'):
             logging.info('{0} have no end time, ignore'.format(issue['id']))
             continue
-        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date
-            logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
+        if datetime.datetime.strptime(issue['due_date'],'%Y-%m-%d').date() < end_date:
+            #logging.info('issue {0} is end at {1}, we need to delay'.format(issue['id'], issue['due_date']))
             issue_delay(session, auth, issue['id'], end_date.strptime('%Y-%m-%d'))
 
     #hours = get_last_7_hours(session)
