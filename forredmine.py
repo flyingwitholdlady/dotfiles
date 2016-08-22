@@ -50,8 +50,9 @@ def user_login(user, pwd):
 
 
 def request_page(session, url, payload = None, header = None, auth = None):
-    r = session.get(url, params=payload, auth=auth)
-    if r.status_code != requests.codes.ok:
+    try:
+        r = session.get(url, params=payload, auth=auth)
+    except requests.HTTPError:
         logging.error('GET:>>'+ url +'<< error:' + str(r.status_code))
         logging.info(r.raise_for_status())
         return None;
@@ -123,14 +124,11 @@ def issue_delay(session, auth, id, date):
         "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
         "Content-Type": "application/json"
     }
-    r = session.put(des_url, headers=header, data=jsond, auth=auth)
-    if r.status_code != requests.codes.ok:
-        logging.error('PUT:>>'+des_url+'<< error:{0}'.format(r.status_code))
-        logging.info(r.raise_for_status())
-        return None
-    else:
+    try:
+        r = session.put(des_url, headers=header, data=jsond, auth=auth)
         logging.info('{0} have delayed to {1}'.format(id, date))
-
+    except requests.HTTPError, msg:
+        logging.error('delay issue {0} failed {0}'.format(id, msg))
 
 
 def main():
