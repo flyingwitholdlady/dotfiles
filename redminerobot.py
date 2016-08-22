@@ -195,7 +195,8 @@ def main():
         logging.error('login email error {0}'.format(msg))
         email_notify = 0
 
-    spend_array = get_time_spend_array(session, auth, date=datetime.date.today().strftime('%Y-%m-%d'))
+    y_m_d_today = datetime.date.today().strftime('%Y-%m-%d')
+    spend_array = get_time_spend_array(session, auth, date=y_m_d_today)
     if spend_array == None:
         logging.info('work 0 hours, rest?')
     else:
@@ -205,14 +206,14 @@ def main():
             hours += spend['hours']
         if hours < 8 or hours > 16:
             if email_notify == 1:
-                email_content += 'work {0} hours in {1} \n'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d'))
-                msg.attach(MIMEText(email_content))
+                email_content += 'work {0} hours in {1} \n'.format(str(hours), y_m_d_today)
                 email_content += 'modify pls'
+                msg.attach(MIMEText(email_content))
                 mail_server.sendmail(my_email_address, my_email_address, msg.as_string())
             else:
-                logging.info('work {0} hours in {1}'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d')))
+                logging.info('work {0} hours in {1}'.format(str(hours), y_m_d_today))
         else:
-            logging.info('work {0} hours in {1}'.format(str(hours), datetime.date.today().strftime('%Y-%m-%d')))
+            logging.info('work {0} hours in {1}'.format(str(hours), y_m_d_today))
 
 
 
