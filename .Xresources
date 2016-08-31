@@ -59,12 +59,12 @@
 
 
 !!*font:xft:Ubuntu Mono:style=Bold
-URxvt.font:xft:Source Code Pro:style=Semibold:size=10,xft:WenQuanYi Zen Hei Mono:style=Regula
+URxvt.font:xft:Source Code Pro:style=Semibold:size=10,xft:WenQuanYi Zen Hei Mono:style=Regular
 
 
 URxvt.scrollBar:False
 URxvt.preeditType:Root
-URxvt.inputMethod:ibus
+URxvt.inputMethod:fcitx
 
 URxvt.cursorBlink:True
 URxvt.saveLines:3000
