@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+## README
+# requirements:
+#    requests
+# sudo pip install requests
+
+# set MAIL_SERVER, MAIL_PORT and DOMAIN
+
+# usage:
+# python redminerobot.py -u 'user' -p 'password' -url 'redmine.com'
+#
+#
+
+
 import requests
 from requests.auth import HTTPBasicAuth
 import sys
@@ -15,6 +28,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 REDMINE_URL=''
+MAIL_SERVER='domain.com'
+MAIL_PORT=587
+DOMAIN='domain.com'
 
 def setup_logger():
     logger = logging.getLogger()
@@ -116,7 +132,7 @@ def issue_delay(session, auth, id, date):
     des_url = '{0}/issues/{1}.json'.format(REDMINE_URL, id)
     payload = {'issue':{}}
     payload['issue']['due_date'] = date
-    payload['issue']['notes'] = 'delayed'
+    payload['issue']['notes'] = 'delayed, work for other task'
     jsond = json.dumps(payload)
     header = {
         "user-agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36",
@@ -125,8 +141,8 @@ def issue_delay(session, auth, id, date):
     try:
         r = session.put(des_url, headers=header, data=jsond, auth=auth)
         logging.info('{0} have delayed to {1}'.format(id, date))
-    except requests.HTTPError, msg:
-        logging.error('delay issue {0} failed {0}'.format(id, msg))
+    except requests.HTTPError:
+        logging.error(r.raise_for_status())
 
 
 def main():
@@ -181,9 +197,9 @@ def main():
 
     email_notify = 1
     try:
-        mail_server = smtplib.SMTP('mail.xxxxx.com', 587)
+        mail_server = smtplib.SMTP(MAIL_SERVER, MAIL_PORT)
         # mail_server.set_debuglevel(1)
-        my_email_address = '{0}@xxxxx.com'.format(args.user)
+        my_email_address = '{0}@{1}'.format(args.user, DOMAIN)
         mail_server.login(my_email_address, args.password)
 
         msg = MIMEMultipart()
@@ -191,8 +207,8 @@ def main():
         msg['To'] = my_email_address
         msg['Subject'] = 'Robot Redmine Message'
 
-    except smtplib.SMTPException, msg:
-        logging.error('login email error {0}'.format(msg))
+    except smtplib.SMTPException:
+        logging.error('login email server error')
         email_notify = 0
 
     y_m_d_today = datetime.date.today().strftime('%Y-%m-%d')
@@ -206,8 +222,7 @@ def main():
             hours += spend['hours']
         if hours < 8 or hours > 16:
             if email_notify == 1:
-                email_content += 'work {0} hours in {1} \n'.format(str(hours), y_m_d_today)
-                email_content += 'modify pls'
+                email_content = 'work {0} hours in {1} \n modify pls'.format(str(hours), y_m_d_today)
                 msg.attach(MIMEText(email_content))
                 mail_server.sendmail(my_email_address, my_email_address, msg.as_string())
             else:
@@ -219,4 +234,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
