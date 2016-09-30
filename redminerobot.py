@@ -162,10 +162,11 @@ def main():
     end_date = datetime.date.today()
     if args.delay == 'auto':
         ## delay tomorrow
-        end_date = (datetime.date.today() + datetime.timedelta(days=1))
+        end_date = (datetime.date.today() + datetime.timedelta(days=3))
     else:
         try:
-            end_date = time.strptime(str(args.delay), "%Y-%m-%d")
+            tm = time.strptime(str(args.delay), "%Y-%m-%d")
+            end_date = datetime.datetime(tm.tm_year, tm.tm_mon, tm.tm_mday).date()
         except:
             logging.error('{0} is not a valid date'.format(args.delay))
             sys.exit()
@@ -182,7 +183,6 @@ def main():
     else:
         logging.info('can\'t get redmine issue!')
         sys.exit()
-
 
     show_issues_state(issues)
     for issue in issues:
