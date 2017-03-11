@@ -49,7 +49,7 @@ def user_login(user, pwd):
     if r == None:
         sys.exit()
 
-    token = re.findall('<input name="authenticity_token" type="hidden" value="(.*?)" />', r.content, re.S)[0]
+    token = re.findall('name="authenticity_token" value="(.*?)" />', r.content, re.S)[0]
     post_data =  {
         'authenticity_token': token,
         'back_url': REDMINE_URL,
