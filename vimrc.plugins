@@ -6,7 +6,7 @@ Plugin 'gmarik/Vundle.vim'
 " ---------------------------------------------------
 Plugin 'majutsushi/tagbar.git'
 
-nnoremap <unique> <silent> <F11> :TagbarToggle<CR>
+nnoremap <leader>t :TagbarToggle<CR>
 let g:tagbar_ctags_bin='/usr/bin/ctags'
 let g:tagbar_autofocus=1
 
@@ -22,7 +22,7 @@ Plugin 'tomasr/molokai.git'
 " nerdtree
 Plugin 'scrooloose/nerdtree'
 
-nmap <F10> :NERDTreeToggle<CR>
+nmap <leader>f :NERDTreeToggle<CR>
 let NERDTreeWinSize=32
 let NERDTreeWinPos="left"
 let NERDTreeShowHidden=1
@@ -71,7 +71,7 @@ let g:SignatureMap = {
 
 " ---------------------------------------------------
 " ctrlp: invoke by <ctrl-p>
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max=100'
@@ -101,11 +101,6 @@ Plugin 'Yggdroot/indentLine.git'
 
 
 " ---------------------------------------------------
-Plugin 'sjl/gundo.vim.git'
-
-nnoremap <F9> :GundoToggle<CR>
-
-" ---------------------------------------------------
 Plugin 'SirVer/ultisnips'
 
 Plugin 'honza/vim-snippets'
@@ -126,21 +121,15 @@ Plugin 'bling/vim-airline.git'
 "" ---------------------------------------------------
 "Plugin 'Valloric/YouCompleteMe.git'
 "let g:ycm_confirm_extra_conf = 0
+"nmap <leader>gd :YcmDiags<CR>
 "nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 "let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-"let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']
-"let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']
-
-
-" ---------------------------------------------------
-"Plugin 'justincampbell/vim-eighties'
-
-"let g:eighties_enabled = 1
-"let g:eighties_minimum_width = 80
-"let g:eighties_extra_width = 0 " Increase this if you want some extra room
-"let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
-"let g:eighties_bufname_additional_patterns = ['NERD_tree']
-
+"nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+"nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+"nnoremap <leader>ga  :execute 'vimgrep ' .expand('<cword>') .expand('**/*.*')<CR>
 
 " ---------------------------------------------------
 Plugin 'aceofall/gtags.vim'
@@ -156,14 +145,12 @@ function! s:get_visual_selection()
   let lines[0] = lines[0][col1 - 1:]
   return join(lines, "\n")
 endfunction
-
-nnoremap <F2> :execute 'Gtags -d '.expand('<cword>')<CR>
-vnoremap <F2> <ESC>:execute 'Gtags -d ' . <SID>get_visual_selection()<CR>
-nnoremap <F3>  :execute 'Gtags -r '.expand('<cword>')<CR>
-nnoremap <F4>  :execute 'Gtags -g ' . expand('<cword>')<CR>
-nnoremap <F12> :execute '!gtags -v'<CR>
+nnoremap <leader>gg :execute 'Gtags -d '.expand('<cword>')<CR>
+nnoremap <leader>ga  :execute 'Gtags -g ' . expand('<cword>')<CR>
+nnoremap <leader>gs :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
+"
 Plugin 'rking/ag.vim'
 Plugin 'vim-scripts/Mark--Karkat'
 Plugin 'terryma/vim-multiple-cursors'
@@ -176,24 +163,17 @@ let g:bookmark_sign = 'v'
 let g:bookmark_highlight_lines = 1
 nmap <Leader><Leader> <Plug>BookmarkToggle
 nmap ma <Plug>BookmarkShowAll
-nmap <F5> <Plug>BookmarkNext
-nmap <F6> <Plug>BookmarkPrev
+nmap mn <Plug>BookmarkNext
+nmap mp <Plug>BookmarkPrev
 nmap mx <Plug>BookmarkClearAll
 
-" ---------------------------------------------------
-Plugin 'davidhalter/jedi-vim.git'
-let g:jedi#popup_on_dot = 1
-let g:jedi#completions_command = '<C-Space>'
 
 " ---------------------------------------------------
-Plugin 'klen/python-mode.git'
-
-let g:pymode = 1
-let g:pymode_doc = 1
-let g:pymode_run_bind = '<leader>r'
-let g:pymode_lint_on_write = 1
-let g:pymode_doc_bind = 'K'
-let g:pymode_rope_goto_definition_bind = '<F3>'
-let g:pymode_rope_goto_definition_cmd = 'new'
-
+Plugin 'iamcco/markdown-preview.vim'
+let g:mkdp_path_to_chrome = "firefox"
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_open = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
 
