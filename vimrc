@@ -23,11 +23,18 @@ syntax on " required
 " Default colorscheme setup
 
 set background=dark
-colorscheme solarized
+"colorscheme solarized
 "let g:molokai_original = 1
 "colorscheme molokai
+color dracula
 highlight WhitespaceEOL ctermbg=red guibg=red
 match WhitespaceEOL /\s\+$/
+if &term =~ '256color'
+  " disable Background Color Erase (BCE) so that color schemes
+  " render properly when inside 256-color tmux and GNU screen.
+  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+  set t_ut=
+endif
 
 "/////////////////////////////////////////////////////////////////////////////
 " General
@@ -140,6 +147,7 @@ inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap { {}<ESC>i
 inoremap < <><ESC>i
+
 
 
 

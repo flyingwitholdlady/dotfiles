@@ -11,11 +11,9 @@ let g:tagbar_ctags_bin='/usr/bin/ctags'
 let g:tagbar_autofocus=1
 
 " ---------------------------------------------------
-" vim-color-solarized
 Plugin 'altercation/vim-colors-solarized'
-
-" molokai
 Plugin 'tomasr/molokai.git'
+Plugin 'dracula/vim'
 
 
 " ---------------------------------------------------
