@@ -148,7 +148,6 @@ nnoremap <leader>ga  :execute 'Gtags -g ' . expand('<cword>')<CR>
 nnoremap <leader>gs :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
-"
 Plugin 'rking/ag.vim'
 Plugin 'vim-scripts/Mark--Karkat'
 Plugin 'terryma/vim-multiple-cursors'

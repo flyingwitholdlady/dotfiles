@@ -95,7 +95,10 @@ set nojoinspaces
 set grepprg=lid\ -Rgrep\ -s
 set grepformat=%f:%l:%m
 set fileencodings=utf-8,GB18030,ucs-bom,default,latin1
-set clipboard=unnamed
+
+if $TMUX == ''
+    set clipboard+=unnamed
+endif
 
 
 
