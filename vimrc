@@ -5,6 +5,7 @@ set nocompatible " be iMproved, required
 set encoding=utf-8
 set termencoding=utf-8
 scriptencoding utf-8
+set cinoptions+=:0
 
 " vundle#begin
 filetype off " required
