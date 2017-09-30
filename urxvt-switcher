@@ -1,0 +1,29 @@
+
+#! perl -w
+use strict;
+
+sub switch {
+    my @wmlist = grep { $_ =~ /urxvt\.URxvt/ } (split('\n', `wmctrl -lxp`));
+    my $activeline = `xprop -root | grep _NET_ACTIVE_WINDOW | head -1`;
+    my $addr = (split(' ', $activeline))[-1];
+    $addr =~ s/,//;
+    $addr =~ s/^0x/0x0/;
+    my $i = 0;
+    for (; !($wmlist[$i] =~/$addr/); $i++) {}
+    $i = (++$i > $#wmlist) ? 0 : $i;
+    my $nid = (split(' ', @wmlist[$i]))[0];
+    `wmctrl -i -a $nid`;
+}
+
+
+
+sub on_user_command {
+    my ($self, $cmd) = @_;
+    if ($cmd eq "switcher:switch") {
+        switch();
+    }
+    ()
+}
+
+
+
