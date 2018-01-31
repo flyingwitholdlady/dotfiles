@@ -38,35 +38,6 @@ Plugin 'fholgado/minibufexpl.vim'
 nnoremap [b :MBEbp <CR>
 nnoremap ]b :MBEbn <CR>
 
-
-" ---------------------------------------------------
-" vim-signature
-Plugin 'kshenoy/vim-signature'
-
-let g:SignatureMap = {
-        \ 'Leader'             :  "m",
-        \ 'PlaceNextMark'      :  "m,",
-        \ 'ToggleMarkAtLine'   :  "m.",
-        \ 'PurgeMarksAtLine'   :  "m-",
-        \ 'DeleteMark'         :  "dm",
-        \ 'PurgeMarks'         :  "mda",
-        \ 'PurgeMarkers'       :  "m<BS>",
-        \ 'GotoNextLineAlpha'  :  "']",
-        \ 'GotoPrevLineAlpha'  :  "'[",
-        \ 'GotoNextSpotAlpha'  :  "`]",
-        \ 'GotoPrevSpotAlpha'  :  "`[",
-        \ 'GotoNextLineByPos'  :  "]'",
-        \ 'GotoPrevLineByPos'  :  "['",
-        \ 'GotoNextSpotByPos'  :  "mn",
-        \ 'GotoPrevSpotByPos'  :  "mp",
-        \ 'GotoNextMarker'     :  "[+",
-        \ 'GotoPrevMarker'     :  "[-",
-        \ 'GotoNextMarkerAny'  :  "]=",
-        \ 'GotoPrevMarkerAny'  :  "[=",
-        \ 'ListLocalMarks'     :  "ml",
-        \ 'ListLocalMarkers'   :  "m?"
-        \ }
-
 " ---------------------------------------------------
 " ctrlp: invoke by <ctrl-p>
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -150,7 +121,6 @@ nnoremap <leader>gs :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
 Plugin 'rking/ag.vim'
-Plugin 'vim-scripts/Mark--Karkat'
 Plugin 'terryma/vim-multiple-cursors'
 
 " ---------------------------------------------------
@@ -159,19 +129,10 @@ highlight BookmarkSign ctermbg=NONE ctermfg=160
 highlight BookmarkLine ctermbg=194 ctermfg=NONE
 let g:bookmark_sign = 'v'
 let g:bookmark_highlight_lines = 1
-nmap <Leader><Leader> <Plug>BookmarkToggle
+nmap mm <Plug>BookmarkToggle
 nmap ma <Plug>BookmarkShowAll
 nmap mn <Plug>BookmarkNext
 nmap mp <Plug>BookmarkPrev
-nmap mx <Plug>BookmarkClearAll
+nmap mc <Plug>BookmarkClearAll
 
-
-" ---------------------------------------------------
-Plugin 'iamcco/markdown-preview.vim'
-let g:mkdp_path_to_chrome = "firefox"
-let g:mkdp_auto_start = 0
-let g:mkdp_auto_open = 0
-let g:mkdp_auto_close = 1
-let g:mkdp_refresh_slow = 0
-let g:mkdp_command_for_global = 0
 
