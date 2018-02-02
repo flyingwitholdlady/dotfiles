@@ -62,7 +62,7 @@ Plugin 'vim-scripts/LargeFile'
 let g:LargeFile= 5 " files >= 5MB will use LargeFile rules
 
 " ---------------------------------------------------
-Plugin 'vim-scripts/AutoComplPop.git'
+"Plugin 'vim-scripts/AutoComplPop.git'
 
 
 " ---------------------------------------------------
@@ -70,15 +70,15 @@ Plugin 'Yggdroot/indentLine.git'
 
 
 " ---------------------------------------------------
-Bundle 'ervandew/supertab'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
+"Bundle 'ervandew/supertab'
+"Plugin 'honza/vim-snippets'
+"Plugin 'SirVer/ultisnips'
 
-let g:UltiSnipsExpandTrigger = '<tab>'
-let g:UltiSnipsJumpForwardTrigger = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsUsePythonVersion = 2
+"let g:UltiSnipsExpandTrigger = '<tab>'
+"let g:UltiSnipsJumpForwardTrigger = '<tab>'
+"let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
+"let g:UltiSnipsEditSplit="vertical"
+"let g:UltiSnipsUsePythonVersion = 2
 
 " ---------------------------------------------------
 Plugin 'tpope/vim-fugitive.git'
@@ -136,3 +136,10 @@ nmap mp <Plug>BookmarkPrev
 nmap mc <Plug>BookmarkClearAll
 
 
+" ---------------------------------------------------
+Plugin 'maralla/completor.vim'
+let g:completor_python_binary = 'python3'
+
+
+" ---------------------------------------------------
+Plugin 'w0rp/ale'

@@ -2,10 +2,13 @@
 "////////////////////////global///////////////////////////////
 
 set nocompatible " be iMproved, required
+silent exec 'language en_US'
 set encoding=utf-8
 set termencoding=utf-8
-scriptencoding utf-8
 set cinoptions+=:0
+
+
+scriptencoding utf-8
 
 " vundle#begin
 filetype off " required
@@ -24,7 +27,7 @@ syntax on " required
 " Default colorscheme setup
 
 set background=dark
-"colorscheme solarized
+colorscheme solarized
 "let g:molokai_original = 1
 "colorscheme molokai
 color dracula
@@ -70,7 +73,8 @@ set showfulltag " show tag with function protype.
 set statusline=%F\ %y%r%m\ %{&ff}%=[Hex:0x%B][Dec:%b]\ %4l/%L\ %02p%%
 set cc=81
 set diffopt+=vertical
-set cursorline
+set cursorline!
+set ttyfast
 set cursorcolumn
 set autoindent " autoindent
 set smartindent " smartindent
@@ -121,8 +125,8 @@ endif
 
 
 " copy - paste
-noremap <Leader>p "+p
-vmap <C-c> "+y
+noremap <Leader>p "*p
+vmap <D-c> "*y
 
 nmap <Leader>q :q<CR>
 nmap <Leader>w :w<CR>
@@ -139,19 +143,13 @@ noremap k gk
 noremap j gj
 nnoremap [t gT
 nnoremap ]t gt
-nnoremap [c :cp <CR>
-nnoremap ]c :cn <CR>
 
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 
-inoremap ( ()<ESC>i
-inoremap [ []<ESC>i
-inoremap { {}<ESC>i
-inoremap < <><ESC>i
 
-
-
+"nnoremap <C-[> :MBEbp <CR>
+"nnoremap <C-]> :MBEbn <CR>
 
