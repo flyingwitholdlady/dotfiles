@@ -13,14 +13,14 @@ scriptencoding utf-8
 " vundle#begin
 filetype off " required
 
-set rtp+=~/.vim/bundle/Vundle.vim/
-call vundle#rc('~/.vim/bundle/')
+call plug#begin('~/.vim/plugged')
 " load .vimrc.plugins & .vimrc.plugins.local
 let vimrc_plugins_path = '~/.vimrc.plugins'
 if filereadable(expand(vimrc_plugins_path))
     exec 'source ' . fnameescape(vimrc_plugins_path)
 endif
-" vundle#end
+call plug#end()
+
 filetype plugin indent on " required
 syntax on " required
 

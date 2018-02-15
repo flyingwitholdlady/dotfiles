@@ -1,24 +1,22 @@
 
 "source $VIMRUNTIME/ftplugin/man.vim
-" ---------------------------------------------------
-Plugin 'gmarik/Vundle.vim'
 
 " ---------------------------------------------------
-Plugin 'majutsushi/tagbar.git'
+Plug 'majutsushi/tagbar'
 
 nnoremap <leader>t :TagbarToggle<CR>
 let g:tagbar_ctags_bin='/usr/bin/ctags'
 let g:tagbar_autofocus=1
 
 " ---------------------------------------------------
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'tomasr/molokai.git'
-Plugin 'dracula/vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'tomasr/molokai'
+Plug 'dracula/vim'
 
 
 " ---------------------------------------------------
 " nerdtree
-Plugin 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 
 nmap <leader>f :NERDTreeToggle<CR>
 let NERDTreeWinSize=32
@@ -33,14 +31,14 @@ let NERDTreeAutoDeleteBuffer=1
 
 " ---------------------------------------------------
 " minibufexpl
-Plugin 'fholgado/minibufexpl.vim'
+Plug 'fholgado/minibufexpl.vim'
 
 nnoremap [b :MBEbp <CR>
 nnoremap ]b :MBEbn <CR>
 
 " ---------------------------------------------------
 " ctrlp: invoke by <ctrl-p>
-Plugin 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max=100'
@@ -57,39 +55,47 @@ endif
 
 " LargeFile
 " ---------------------------------------------------
-Plugin 'vim-scripts/LargeFile'
+Plug 'vim-scripts/LargeFile'
 
 let g:LargeFile= 5 " files >= 5MB will use LargeFile rules
 
 " ---------------------------------------------------
-"Plugin 'vim-scripts/AutoComplPop.git'
+"Plug 'vim-scripts/AutoComplPop'
 
 
 " ---------------------------------------------------
-Plugin 'Yggdroot/indentLine.git'
+Plug 'Yggdroot/indentLine'
 
 
 " ---------------------------------------------------
-"Bundle 'ervandew/supertab'
-"Plugin 'honza/vim-snippets'
-"Plugin 'SirVer/ultisnips'
-
-"let g:UltiSnipsExpandTrigger = '<tab>'
-"let g:UltiSnipsJumpForwardTrigger = '<tab>'
-"let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
-"let g:UltiSnipsEditSplit="vertical"
-"let g:UltiSnipsUsePythonVersion = 2
-
-" ---------------------------------------------------
-Plugin 'tpope/vim-fugitive.git'
+Plug 'justinmk/vim-sneak'
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
 
 
 " ---------------------------------------------------
-Plugin 'bling/vim-airline.git'
+Plug 'ervandew/supertab'
+Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+
+let g:UltiSnipsExpandTrigger = '<tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
+let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsUsePythonVersion = 3
+
+" ---------------------------------------------------
+Plug 'tpope/vim-fugitive'
+
+
+" ---------------------------------------------------
+Plug 'bling/vim-airline'
 
 
 "" ---------------------------------------------------
-"Plugin 'Valloric/YouCompleteMe.git'
+"Plug 'Valloric/YouCompleteMe'
 "let g:ycm_confirm_extra_conf = 0
 "nmap <leader>gd :YcmDiags<CR>
 "nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -102,7 +108,7 @@ Plugin 'bling/vim-airline.git'
 "nnoremap <leader>ga  :execute 'vimgrep ' .expand('<cword>') .expand('**/*.*')<CR>
 
 " ---------------------------------------------------
-Plugin 'aceofall/gtags.vim'
+Plug 'aceofall/gtags.vim'
 
 set cscopetag
 set cscopeprg=gtags-cscope
@@ -120,11 +126,11 @@ nnoremap <leader>ga  :execute 'Gtags -g ' . expand('<cword>')<CR>
 nnoremap <leader>gs :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
-Plugin 'rking/ag.vim'
-Plugin 'terryma/vim-multiple-cursors'
+Plug 'rking/ag.vim'
+Plug 'terryma/vim-multiple-cursors'
 
 " ---------------------------------------------------
-Plugin 'MattesGroeger/vim-bookmarks.git'
+Plug 'MattesGroeger/vim-bookmarks'
 highlight BookmarkSign ctermbg=NONE ctermfg=160
 highlight BookmarkLine ctermbg=194 ctermfg=NONE
 let g:bookmark_sign = 'v'
@@ -137,9 +143,12 @@ nmap mc <Plug>BookmarkClearAll
 
 
 " ---------------------------------------------------
-Plugin 'maralla/completor.vim'
+Plug 'maralla/completor.vim'
 let g:completor_python_binary = 'python3'
 
 
 " ---------------------------------------------------
-Plugin 'w0rp/ale'
+Plug 'w0rp/ale'
+
+" ---------------------------------------------------
+Plug 'plytophogy/vim-virtualenv'
