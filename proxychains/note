@@ -1,0 +1,6 @@
+cd proxychains
+# configure and install
+./configure --prefix=/usr --sysconfdir=/etc
+make
+sudo make install
+sudo make install-config # installs /etc/proxychains.conf

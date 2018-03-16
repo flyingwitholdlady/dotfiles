@@ -2,7 +2,6 @@
 "////////////////////////global///////////////////////////////
 
 set nocompatible " be iMproved, required
-silent exec 'language en_US'
 set encoding=utf-8
 set termencoding=utf-8
 set cinoptions+=:0
