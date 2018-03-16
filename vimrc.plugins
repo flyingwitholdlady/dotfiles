@@ -11,7 +11,7 @@ let g:tagbar_autofocus=1
 " ---------------------------------------------------
 Plug 'altercation/vim-colors-solarized'
 Plug 'tomasr/molokai'
-Plug 'dracula/vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 
 " ---------------------------------------------------
