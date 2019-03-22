@@ -15,7 +15,7 @@ def md5sum(filename, blocksize=65536):
     return hash.hexdigest()
 
 
-def build_dup_dict(dir_path, pattern='*.jpg'):
+def build_dup_dict(dir_path, pattern='*.png'):
     def save(file):
         hash = md5sum(file)
         if hash not in dup.keys():
