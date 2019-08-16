@@ -95,7 +95,7 @@ Plug 'bling/vim-airline'
 
 
 "" ---------------------------------------------------
-"Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe'
 "let g:ycm_confirm_extra_conf = 0
 "nmap <leader>gd :YcmDiags<CR>
 "nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
@@ -108,22 +108,22 @@ Plug 'bling/vim-airline'
 "nnoremap <leader>ga  :execute 'vimgrep ' .expand('<cword>') .expand('**/*.*')<CR>
 
 " ---------------------------------------------------
-Plug 'aceofall/gtags.vim'
-
-set cscopetag
-set cscopeprg=gtags-cscope
-
-function! s:get_visual_selection()
-  let [lnum1, col1] = getpos("'<")[1:2]
-  let [lnum2, col2] = getpos("'>")[1:2]
-  let lines = getline(lnum1, lnum2)
-  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
-  let lines[0] = lines[0][col1 - 1:]
-  return join(lines, "\n")
-endfunction
-nnoremap <leader>gg :execute 'Gtags -d '.expand('<cword>')<CR>
-nnoremap <leader>ga  :execute 'Gtags -g ' . expand('<cword>')<CR>
-nnoremap <leader>gs :execute '!gtags -v'<CR>
+"Plug 'aceofall/gtags.vim'
+"
+"set cscopetag
+"set cscopeprg=gtags-cscope
+"
+"function! s:get_visual_selection()
+"  let [lnum1, col1] = getpos("'<")[1:2]
+"  let [lnum2, col2] = getpos("'>")[1:2]
+"  let lines = getline(lnum1, lnum2)
+"  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+"  let lines[0] = lines[0][col1 - 1:]
+"  return join(lines, "\n")
+"endfunction
+"nnoremap <leader>gg :execute 'Gtags -d '.expand('<cword>')<CR>
+"nnoremap <leader>ga  :execute 'Gtags -g ' . expand('<cword>')<CR>
+"nnoremap <leader>gs :execute '!gtags -v'<CR>
 
 " ---------------------------------------------------
 Plug 'rking/ag.vim'
@@ -141,14 +141,16 @@ nmap mn <Plug>BookmarkNext
 nmap mp <Plug>BookmarkPrev
 nmap mc <Plug>BookmarkClearAll
 
-
 " ---------------------------------------------------
-Plug 'maralla/completor.vim'
-let g:completor_python_binary = 'python3'
-
-
-" ---------------------------------------------------
-Plug 'w0rp/ale'
-
-" ---------------------------------------------------
-Plug 'plytophogy/vim-virtualenv'
+"
+Plug 'dkprice/vim-easygrep'
+"
+"Plug 'maralla/completor.vim'
+"let g:completor_python_binary = 'python3'
+"
+"
+"" ---------------------------------------------------
+"Plug 'w0rp/ale'
+"
+"" ---------------------------------------------------
+"Plug 'plytophogy/vim-virtualenv'
