@@ -154,3 +154,14 @@ Plug 'dkprice/vim-easygrep'
 "
 "" ---------------------------------------------------
 "Plug 'plytophogy/vim-virtualenv'
+Plug 'Raimondi/delimitMate'
+
+
+
+" Typescript
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'Quramy/tsuquyomi'
+Plug 'leafgarland/typescript-vim'
+let g:syntastic_typescript_checkers = ['tsuquyomi']
+autocmd filetype typescript nnoremap <leader>i :TsuImport<CR>
+
