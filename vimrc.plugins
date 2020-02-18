@@ -18,7 +18,7 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 " nerdtree
 Plug 'scrooloose/nerdtree'
 
-nmap <leader>f :NERDTreeToggle<CR>
+nmap <leader>n :NERDTreeToggle<CR>
 let NERDTreeWinSize=32
 let NERDTreeWinPos="left"
 let NERDTreeShowHidden=1
@@ -30,6 +30,9 @@ let NERDTreeAutoDeleteBuffer=1
 
 
 " ---------------------------------------------------
+Plug 'haya14busa/incsearch.vim'
+
+" ---------------------------------------------------
 " minibufexpl
 Plug 'fholgado/minibufexpl.vim'
 
@@ -37,20 +40,23 @@ nnoremap [b :MBEbp <CR>
 nnoremap ]b :MBEbn <CR>
 
 " ---------------------------------------------------
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+"let g:Lf_WindowPosition = 'popup'
+"let g:Lf_PreviewInPopup = 1
 " ctrlp: invoke by <ctrl-p>
-Plug 'ctrlpvim/ctrlp.vim'
-
-let g:ctrlp_working_path_mode = ''
-let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max=100'
-let g:ctrlp_max_files=0
-let g:ctrlp_follow_symlinks = 2
-let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif
+"Plug 'ctrlpvim/ctrlp.vim'
+"
+"let g:ctrlp_working_path_mode = ''
+"let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max=100'
+"let g:ctrlp_max_files=0
+"let g:ctrlp_follow_symlinks = 2
+"let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+"if executable('ag')
+"  " Use Ag over Grep
+"  set grepprg=ag\ --nogroup\ --nocolor
+"  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+"  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+"endif
 
 
 " LargeFile
